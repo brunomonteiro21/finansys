@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@Angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { switchMap } from 'rxjs/operators';
 
@@ -48,7 +48,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private loadCategory() {
-    if (this.currentAction == "edit") { /*
+    if (this.currentAction == "edit") {
       this.route.paramMap.pipe(
         switchMap(params => this.categoryService.getById(+params.get("id")))
       )
@@ -58,7 +58,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
             this.categoryForm.patchValue(category) //binds load category data to category form
           },
           (error) => alert("Ocorreu um erro no servidor")
-        ) */
+        )
     }
   }
 
@@ -70,11 +70,11 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     });
   }
 
-  private setCurrentAction() { /*
+  private setCurrentAction() {
     if (this.route.snapshot.url[0].path == "new") {
       this.currentAction = "new"
     } else {
       this.currentAction = "edit"
-    } */
+    }
   }
 }
