@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { switchMap } from 'rxjs/operators';
 
@@ -24,7 +24,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   constructor(
     private categoryService: CategoryService,
     private route: ActivatedRoute,
-    //private router: Router,
+    private router: Router,
     private formBuilder: FormBuilder
   ) { }
 
@@ -38,10 +38,19 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     this.setPageTitle();
   }
 
+  public submitForm() {
+    this.submittingForm = true;
+    if (this.currentAction == "new") {
+      this.createCategory();
+    } else {
+      this.updateCategory();
+    }
+  }
+
   private setPageTitle() {
-    if(this.currentAction == "new"){
+    if (this.currentAction == "new") {
       this.pageTitle = "Cadastro de nova categoria"
-    }else{
+    } else {
       const categoryName = this.category.name || "";
       this.pageTitle = "Editando categoria: " + categoryName;
     }
@@ -76,5 +85,42 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     } else {
       this.currentAction = "edit"
     }
+  }
+
+  private actionsForError(error: any): void {
+    toast.error("Ocorreu um erro ao processar sua solicitação!");
+    this.submittingForm = false;
+
+    if (error.status === 422) {
+      this.serverErrorMessages = JSON.parse(error._body).errors;
+    } else {
+      this.serverErrorMessages = ["Falha na comunicação com o servidor. Por favor, tente mais tarde."]
+    }
+  }
+
+  private actionsForSucess(category: Category): void {
+    toast.success("Solicitação processada com sucesso!");
+
+    this.router.navigateByUrl("categories", { skipLocationChange: true }).then(
+      () => this.router.navigate(["categories", category.id, "edit"])
+    );
+  }
+
+  private createCategory() {
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+    this.categoryService.create(category)
+      .subscribe(
+        category => this.actionsForSucess(category),
+        error => this.actionsForError(error)
+      );
+  }
+
+  private updateCategory() {
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
+    this.categoryService.update(category)
+      .subscribe(
+        category => this.actionsForSucess(category),
+        error => this.actionsForError(error)
+      );
   }
 }
