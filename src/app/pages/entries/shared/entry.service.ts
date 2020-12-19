@@ -9,7 +9,7 @@ import { Entry } from './entry.model';
 })
 export class EntryService {
 
-  private apiPath: string = "api/entries";
+  private apiPath = 'api/entries';
 
   constructor(private http: HttpClient) { }
 
@@ -28,14 +28,14 @@ export class EntryService {
     );
   }
 
-  create(entry: Entry): Observable<Entry>{
+  create(entry: Entry): Observable<Entry> {
     return this.http.post(this.apiPath, entry).pipe(
       catchError(this.handlerError),
       map(this.jsonDataToentry)
     );
   }
 
-  update(entry: Entry): Observable<Entry>{
+  update(entry: Entry): Observable<Entry> {
     const url = `${this.apiPath}/${entry.id}`;
     return this.http.put(url, entry).pipe(
       catchError(this.handlerError),
@@ -43,7 +43,7 @@ export class EntryService {
     );
   }
 
-  delete(id: number): Observable<any>{
+  delete(id: number): Observable<any> {
     const url = `${this.apiPath}/${id}`;
     return this.http.delete(url).pipe(
       catchError(this.handlerError),
@@ -53,16 +53,16 @@ export class EntryService {
 
   private jsonDataToentries(jsonData: any[]): Entry[] {
     const entries: Entry[] = [];
-    jsonData.forEach(element => entries.push(element as Entry))
+    jsonData.forEach(element => entries.push(Object.assign(new Entry(), element)));
     return entries;
   }
 
   private jsonDataToentry(jsonData: any): Entry {
-    return jsonData as Entry;
+    return Object.assign(new Entry(), jsonData);
   }
 
   private handlerError(error: any): Observable<any> {
-    console.log("ERRO NA REQUISIÇÃO => ", error)
+    console.log('ERRO NA REQUISIÇÃO => ', error);
     return throwError(error);
   }
 }
