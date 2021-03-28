@@ -46,7 +46,7 @@
           <p-calendar id="date" formControlName="date" inputStyleClass="form-control" dataType="string"
             dateFormat="dd/mm/yy" [locale]="ptBR" [showButtonBar]=true></p-calendar>
 
-            <app-form-field-error [form-control]="resourceForm.get('date')"></app-form-field-error>
+          <app-form-field-error [form-control]="resourceForm.get('date')"></app-form-field-error>
         </div>
       </div>
 
@@ -85,12 +85,7 @@
     </div>
   </div>
 
-  <div class="alert alert-danger mt-4" *ngIf="serverErrorMessages">
-    <strong>Erro no servidor</strong>
-    <ul>
-      <li *ngFor="let error of serverErrorMessages">{{error}}</li>
-    </ul>
-  </div>
+  <app-server-error-messages [server-error-messages]="serverErrorMessages"></app-server-error-messages>
 
   <button [disabled]="submittingForm || resourceForm.invalid" class="btn btn-primary btn-lg float-right mt-3">
     Salvar
